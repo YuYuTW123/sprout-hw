@@ -16,16 +16,29 @@ Container* insert(Container* head, int index, int weight)
 	
 	if(head != nullptr)
 	{
-		
-		Container *next = head->next;
-		
-		now->next = next;
-		head->next = now;
+		Container *cur = head, *prev = 0;
+		while(cur->index < index)
+		{
+			prev = cur;
+			cur = cur->next;
+		}
+		if(cur == nullptr)
+			head->next = now;
+		else if(cur == head){
+			now->next = head;
+			head = now;
+		}
+		else{
+			prev->next = now;
+			now->next = cur;
+			head = prev;
+		}
 	}
 	else
 	{
 			now->next = head;
 	}
+	
 }
 Container* remove(Container* head, int max_weight)
 {
@@ -36,10 +49,17 @@ Container* remove(Container* head, int max_weight)
     	prev = cur;
     	cur = cur->next;
 	}
-	
-	if(cur->weight == head->weight)
+	if(cur == nullptr)
+		return head;
+	else if(cur->index == head->index)
 	{
 		head = cur->next;
+		delete cur;
+		cur = 0;
+	}
+	else if(cur->next == nullptr)
+	{
+		head = prev;
 		delete cur;
 		cur = 0;
 	}
